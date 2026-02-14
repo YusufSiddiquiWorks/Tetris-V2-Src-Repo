@@ -1,23 +1,25 @@
-# Use the official Node.js 16 image as the base image
-FROM node:16
-
-# Set the working directory inside the container
+# --- Stage 1: Build the App ---
+FROM node:16-alpine AS builder
 WORKDIR /app
 
-# Copy package.json and package-lock.json (or yarn.lock) to the container
+# Install dependencies and build
 COPY package*.json ./
-
-# Install project dependencies
 RUN npm install
-
-# Copy the rest of the application code to the container
 COPY . .
-
-# Build the React app
 RUN npm run build
 
-# Expose the port that the app will run on (usually 3000 by default)
+# --- Stage 2: Serve the App (Lightweight) ---
+FROM node:16-alpine
+WORKDIR /app
+
+# Install the simple web server globally
+RUN npm install -g serve
+
+# Copy ONLY the 'build' folder from Stage 1 (Magic step for small size)
+COPY --from=builder /app/build ./build
+
+# Expose port 3000 (React standard)
 EXPOSE 3000
 
-# Start the React app when the container starts
-CMD [ "npm", "start" ]
+# Start the server
+CMD ["serve", "-s", "build", "-l", "3000"]

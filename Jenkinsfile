@@ -12,8 +12,9 @@ pipeline {
         SSM_PASS_PATH = '/ml/docker-credential/password'
         
         // REPO_NAME: This is your "username/image-name"
-        // Example: 'yusufsiddiqui/my-app'
-        REPO_NAME = 'yusufsiddiqui/tetris-v2'
+        // Example: 'yswork/my-app'
+        REPO_NAME = 'yswork/tetris-v2'
+        REGISTRY_URL = "docker.io"
 
         // --- LOCAL FIXES ---
         // Ensure Jenkins can find 'docker' and 'aws' on your local machine
